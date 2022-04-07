@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import emailRouter from "./routes/email-router.mjs";
 import { errorMiddleware } from "./middlewares/error.middleware.mjs";
+import { config } from "dotenv";
+config();
 
 const app = express();
 app.set("json spaces", 4);

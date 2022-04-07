@@ -1,17 +1,19 @@
 import { ImapFlow } from "imapflow";
 import mailparser from "mailparser";
 import nodemailer from "nodemailer";
+import { config } from "dotenv";
+config();
 
-const SMTP_USER = "yarikpetrovsk@gmail.com";
-const SMTP_PASS = "ivienvtsnmcjamqz";
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASSWORD;
 
 const smtpConfig = {
   host: "smtp.gmail.com",
   port: 993,
   secure: true,
   auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
+    user: smtpUser,
+    pass: smtpPass,
   },
   logger: false,
 };
@@ -26,6 +28,7 @@ export const getEmails = async ({ limit = 3, offset = 0 }) => {
   const searchObj = {
     seq: `${rangeFrom}:` + rangeTo,
   };
+
   try {
     for await (let message of client.fetch(searchObj, {
       envelope: true,
@@ -60,7 +63,6 @@ export const getUnseenEmails = async ({ limit = 3, offset = 0 }) => {
     for await (let message of client.fetch(searchObj, {
       envelope: true,
     })) {
-      // const parsedMessage = await mailparser.simpleParser(message.source);
       messages.unshift({
         id: message.id,
         envelope: message.envelope,
@@ -102,8 +104,8 @@ export const sendEmail = async (message) => {
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
+      user: smtpUser,
+      pass: smtpPass,
     },
   });
 
