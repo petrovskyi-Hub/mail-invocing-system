@@ -5,7 +5,7 @@ const emailRouter = Router();
 
 emailRouter.get("/getEmails", emailController.getEmails);
 emailRouter.get("/getUnseenEmails", emailController.getUnseenEmails);
-emailRouter.post("/getEmailById", emailController.getEmailById);
+emailRouter.get("/getEmailById/:id", emailController.getEmailById);
 emailRouter.post("/sendEmail", emailController.sendEmail);
 
 export default emailRouter;

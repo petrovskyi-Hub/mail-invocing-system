@@ -2,6 +2,7 @@ import { ImapFlow } from "imapflow";
 import mailparser from "mailparser";
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
+import ApiError from "../customError.mjs";
 config();
 
 const smtpUser = process.env.SMTP_USER;
@@ -81,6 +82,7 @@ export const getEmailById = async (id) => {
   await client.connect();
   const lock = await client.getMailboxLock("INBOX");
   let parsedMessage;
+
   const searchObj = {
     emailId: id,
   };

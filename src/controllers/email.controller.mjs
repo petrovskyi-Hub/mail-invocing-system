@@ -23,7 +23,7 @@ export const getUnseenEmails = async (req, res, next) => {
 
 export const getEmailById = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const mails = await emailService.getEmailById(id);
 
     return res.status(HttpStatus.OK).json({ mails });
