@@ -1,0 +1,45 @@
+### GET inbox emails
+GET http://localhost:5001/api/emails?limit=3&offset=0 HTTP/1.1
+Content-Type: application/json
+
+### GET "Отправленные" emails
+GET http://localhost:5001/api/emails?limit=3&offset=0&folder=[Gmail]/Отправленные HTTP/1.1
+Content-Type: application/json
+
+### GET "Корзина" emails
+GET http://localhost:5001/api/emails?limit=3&offset=0&folder=[Gmail]/Корзина HTTP/1.1
+Content-Type: application/json
+
+### GET unseen emails
+GET http://localhost:5001/api/emails/unseen?limit=10&offset=0 HTTP/1.1
+Content-Type: application/json
+
+### GET email by id
+GET http://localhost:5001/api/emails/email/1729442722995123160 HTTP/1.1
+Content-Type: application/json
+
+### DELETE email by id (not move to basket)
+DELETE http://localhost:5001/api/emails/email/1729475615280387022 HTTP/1.1
+Content-Type: application/json
+
+### GET folders
+GET http://localhost:5001/api/emails/mailboxesTree HTTP/1.1
+Content-Type: application/json
+
+### POST send email
+POST http://localhost:5001/api/emails HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": {
+        "from": "Yarik <yarikpetrovsk@gmail.com>",
+        "to": "y.petrovskiy@kralys.ch",
+        "subject": "Message 04",
+        "text": "Super message",
+        "dsn": {
+            "return": "headers",
+            "notify": ["success", "failure", "delay"],
+            "recipient": "yarikpetrovsk@gmail.com"
+        }
+    }
+}
