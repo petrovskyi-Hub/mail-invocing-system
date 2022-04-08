@@ -54,9 +54,9 @@ export const moveEmailById = async (req, res, next) => {
     const { id } = req.params;
     const from = req.query.from !== undefined ? req.query.from : "INBOX";
     const to = req.query.to !== undefined ? req.query.to : "[Gmail]/Корзина";
-    await emailService.moveEmailById(id, req.query);
+    await emailService.moveEmailById(id, from, to);
 
-    return res.status(HttpStatus.OK);
+    return res.status(HttpStatus.OK).json("OK");
   } catch (error) {
     next(error);
   }
