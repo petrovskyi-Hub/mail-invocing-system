@@ -90,7 +90,7 @@ export const getEmailById = async (id) => {
     for await (let message of client.fetch(searchObj, {
       source: true,
     })) {
-      parsedMessage = await mailparser.simpleParser(message.source);
+      parsedMessage = await mailparser.simpleParser(message.source, { skipHtmlToText: true, skipTextToHtml: true });
     }
   } finally {
     lock.release();
