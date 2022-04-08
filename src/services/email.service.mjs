@@ -19,13 +19,16 @@ const smtpConfig = {
   logger: false,
 };
 
-export const getEmails = async ({ limit = 3, offset = 0 }) => {
+export const getEmails = async ({ limit = 3, offset = 0, folder = "INBOX" }) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
-  const lock = await client.getMailboxLock("INBOX");
+  const lock = await client.getMailboxLock(folder);
   let messages = [];
-  const rangeFrom = client.mailbox.exists - limit - offset + 1;
-  const rangeTo = offset == 0 ? "*" : (client.mailbox.exists - offset).toString();
+
+  let rangeFrom = client.mailbox.exists - Number(limit) - Number(offset) + 1;
+  rangeFrom = rangeFrom < 0 ? 0 : rangeFrom;
+
+  const rangeTo = Number(offset) == 0 ? "*" : (client.mailbox.exists - Number(offset)).toString();
   const searchObj = {
     seq: `${rangeFrom}:` + rangeTo,
   };
@@ -98,6 +101,17 @@ export const getEmailById = async (id) => {
   await client.logout();
 
   return parsedMessage;
+};
+
+export const getMailboxesTree = async () => {
+  const client = new ImapFlow(smtpConfig);
+  await client.connect();
+
+  let tree = await client.listTree();
+
+  await client.logout();
+
+  return tree;
 };
 
 export const sendEmail = async (message) => {
