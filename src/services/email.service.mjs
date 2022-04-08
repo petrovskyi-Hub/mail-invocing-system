@@ -26,7 +26,7 @@ export const getEmails = async ({ limit = 3, offset = 0, folder = "INBOX" }) => 
   let messages = [];
 
   let rangeFrom = client.mailbox.exists - Number(limit) - Number(offset) + 1;
-  rangeFrom = rangeFrom < 0 ? 0 : rangeFrom;
+  rangeFrom = rangeFrom <= 0 ? 1 : rangeFrom;
 
   const rangeTo = Number(offset) == 0 ? "*" : (client.mailbox.exists - Number(offset)).toString();
   const searchObj = {
