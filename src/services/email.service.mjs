@@ -19,16 +19,16 @@ const smtpConfig = {
   logger: false,
 };
 
-export const getEmails = async ({ limit = 3, offset = 0, folder = "INBOX" }) => {
+export const getEmails = async (limit, offset, folder) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
   const lock = await client.getMailboxLock(folder);
   let messages = [];
 
-  let rangeFrom = client.mailbox.exists - Number(limit) - Number(offset) + 1;
+  let rangeFrom = client.mailbox.exists - limit - offset + 1;
   rangeFrom = rangeFrom <= 0 ? 1 : rangeFrom;
 
-  const rangeTo = Number(offset) == 0 ? "*" : (client.mailbox.exists - Number(offset)).toString();
+  const rangeTo = offset == 0 ? "*" : (client.mailbox.exists - offset).toString();
   const searchObj = {
     seq: `${rangeFrom}:` + rangeTo,
   };
@@ -52,6 +52,7 @@ export const getEmails = async ({ limit = 3, offset = 0, folder = "INBOX" }) => 
   return messages;
 };
 
+// work incorrect
 export const getUnseenEmails = async ({ limit = 3, offset = 0 }) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
@@ -80,7 +81,7 @@ export const getUnseenEmails = async ({ limit = 3, offset = 0 }) => {
   return messages;
 };
 
-export const getEmailById = async (id, { folder = "INBOX" }) => {
+export const getEmailById = async (id, folder) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
   const lock = await client.getMailboxLock(folder);
@@ -103,13 +104,28 @@ export const getEmailById = async (id, { folder = "INBOX" }) => {
   return parsedMessage;
 };
 
-export const deleteEmailById = async (id, { folder = "INBOX" }) => {
+export const deleteEmailById = async (id, folder) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
   const lock = await client.getMailboxLock(folder);
   let result;
   try {
     result = await client.messageDelete({ emailId: id });
+  } finally {
+    lock.release();
+  }
+  await client.logout();
+
+  return result;
+};
+
+export const moveEmailById = async (id, from, to) => {
+  const client = new ImapFlow(smtpConfig);
+  await client.connect();
+  const lock = await client.getMailboxLock(from);
+  let result;
+  try {
+    result = await client.messageMove({ emailId: id }, to);
   } finally {
     lock.release();
   }

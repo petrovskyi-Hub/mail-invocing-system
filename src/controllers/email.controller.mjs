@@ -3,7 +3,11 @@ import * as emailService from "../services/email.service.mjs";
 
 export const getEmails = async (req, res, next) => {
   try {
-    const mails = await emailService.getEmails(req.query);
+    const limit = req.query.limit !== undefined ? Number(req.query.limit) : 5;
+    const offset = req.query.offset !== undefined ? Number(req.query.offset) : 0;
+    const folder = req.query.folder !== undefined ? req.query.folder : "INBOX";
+
+    const mails = await emailService.getEmails(limit, offset, folder);
 
     return res.status(HttpStatus.OK).json({ mails });
   } catch (error) {
@@ -23,8 +27,9 @@ export const getUnseenEmails = async (req, res, next) => {
 
 export const getEmailById = async (req, res, next) => {
   try {
+    const folder = req.query.folder !== undefined ? req.query.folder : "INBOX";
     const { id } = req.params;
-    const mail = await emailService.getEmailById(id);
+    const mail = await emailService.getEmailById(id, folder);
 
     return res.status(HttpStatus.OK).json({ mail });
   } catch (error) {
@@ -34,10 +39,24 @@ export const getEmailById = async (req, res, next) => {
 
 export const deleteEmailById = async (req, res, next) => {
   try {
+    const folder = req.query.folder !== undefined ? req.query.folder : "INBOX";
     const { id } = req.params;
-    const result = await emailService.deleteEmailById(id, req.query);
+    const result = await emailService.deleteEmailById(id, folder);
 
     return res.status(HttpStatus.OK).json({ deleted: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const moveEmailById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const from = req.query.from !== undefined ? req.query.from : "INBOX";
+    const to = req.query.to !== undefined ? req.query.to : "[Gmail]/Корзина";
+    await emailService.moveEmailById(id, req.query);
+
+    return res.status(HttpStatus.OK);
   } catch (error) {
     next(error);
   }

@@ -9,5 +9,6 @@ emailRouter.get("/email/:id", emailController.getEmailById);
 emailRouter.get("/mailboxesTree", emailController.getMailboxesTree);
 emailRouter.post("/", emailController.sendEmail);
 emailRouter.delete("/email/:id", emailController.deleteEmailById);
+emailRouter.post("/email/:id", emailController.moveEmailById);
 
 export default emailRouter;
