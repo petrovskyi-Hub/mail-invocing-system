@@ -156,6 +156,13 @@ export const sendEmail = async (message) => {
     },
   });
 
+  message.from = smtpUser;
+  message.dsn = {
+    return: "headers",
+    notify: ["success", "failure", "delay"],
+    recipient: smtpUser,
+  };
+
   const info = await transporter.sendMail(message);
   return info;
 };
