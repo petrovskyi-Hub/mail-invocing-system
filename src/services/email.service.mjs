@@ -80,10 +80,10 @@ export const getUnseenEmails = async ({ limit = 3, offset = 0 }) => {
   return messages;
 };
 
-export const getEmailById = async (id) => {
+export const getEmailById = async (id, { folder = "INBOX" }) => {
   const client = new ImapFlow(smtpConfig);
   await client.connect();
-  const lock = await client.getMailboxLock("INBOX");
+  const lock = await client.getMailboxLock(folder);
   let parsedMessage;
 
   const searchObj = {
@@ -101,6 +101,21 @@ export const getEmailById = async (id) => {
   await client.logout();
 
   return parsedMessage;
+};
+
+export const deleteEmailById = async (id, { folder = "INBOX" }) => {
+  const client = new ImapFlow(smtpConfig);
+  await client.connect();
+  const lock = await client.getMailboxLock(folder);
+  let result;
+  try {
+    result = await client.messageDelete({ emailId: id });
+  } finally {
+    lock.release();
+  }
+  await client.logout();
+
+  return result;
 };
 
 export const getMailboxesTree = async () => {

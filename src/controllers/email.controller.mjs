@@ -32,6 +32,17 @@ export const getEmailById = async (req, res, next) => {
   }
 };
 
+export const deleteEmailById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await emailService.deleteEmailById(id, req.query);
+
+    return res.status(HttpStatus.OK).json({ deleted: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getMailboxesTree = async (req, res, next) => {
   try {
     const response = await emailService.getMailboxesTree();
