@@ -20,10 +20,11 @@ app.use(
   })
 );
 
+app.use(express.static("public"));
 app.use("/api/emails", emailRouter);
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 const start = async () => {
   try {
@@ -33,13 +34,5 @@ const start = async () => {
     process.exit(1);
   }
 };
-
-// process.on("SIGINT", () => {
-//   console.log("received sigint");
-//   setTimeout(() => {
-//     console.log("exit");
-//     process.exit(0);
-//   }, 500);
-// });
 
 start();
