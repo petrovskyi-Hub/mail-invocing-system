@@ -82,3 +82,24 @@ export const sendEmail = async (req, res, next) => {
     next(error);
   }
 };
+
+export const sendEmailByMailgun = async (req, res, next) => {
+  try {
+    const { message } = req.body;
+    const mails = await emailService.sendEmailByMailgun(message);
+
+    return res.status(HttpStatus.OK).json({ mails });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const webhook = async (req, res, next) => {
+  try {
+    console.log("🚀 req.body", JSON.stringify(req.body, null, 2));
+
+    return res.status(200).end();
+  } catch (error) {
+    next(error);
+  }
+};

@@ -2,7 +2,8 @@ import { ImapFlow } from "imapflow";
 import mailparser from "mailparser";
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
-import ApiError from "../customError.mjs";
+import mailgun from "mailgun-js";
+
 config();
 
 const smtpUser = process.env.SMTP_USER;
@@ -165,4 +166,13 @@ export const sendEmail = async (message) => {
 
   const info = await transporter.sendMail(message);
   return info;
+};
+
+export const sendEmailByMailgun = async (message) => {
+  const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
+  message.from = "Yaroslav <y.petrovskiy@kralys.ch>";
+
+  const response = await mg.messages().send(message);
+
+  return response;
 };
